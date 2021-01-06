@@ -1,0 +1,111 @@
+cadena = str(input("Ingrese cadena: "))
+cadena_convertida = ""
+for letra in cadena:
+    if letra == "1":
+        cadena_convertida += "I"
+    elif letra == "0":
+        cadena_convertida += "O"
+    elif letra == "5":
+        cadena_convertida += "S"
+    elif letra != " ":
+        cadena_convertida += letra
+matriz = []
+for fila in range(18):
+    fil = []
+    for columna in range(18):
+        letra = cadena_convertida[columna + 18 * fila]
+        fil.append(letra)
+    matriz.append(fil)
+
+
+def imprimir_matriz(matrix):
+    for filita in matrix:
+        for elemento in filita:
+            print(elemento + " ", end="")
+        print("")
+
+
+def buscar_vertical(tabla, posicion_a, posicion_b, palabr):
+    longit_palabra = len(palabr)
+    suma_palabra_1 = ""
+    suma_palabra_2 = ""
+    for pos_lettra in range(longit_palabra):
+        if posicion_a - pos_lettra >= 0:
+            suma_palabra_1 += tabla[posicion_a - pos_lettra][posicion_b]
+        if posicion_a + pos_lettra <= 17:
+            suma_palabra_2 += tabla[posicion_a + pos_lettra][posicion_b]
+    if suma_palabra_1 == palabr:
+        return True, "arriba"
+    elif suma_palabra_2 == palabr:
+        return True, "abajo"
+    else:
+        return False, "xd"
+
+
+def buscar_horizontal(tabla, posicion_a, posicion_b, palabr):
+    tamano_pal = len(palabr)
+    suma_letras_1 = ""
+    suma_letras_2 = ""
+    for pos_letra in range(tamano_pal):
+        if posicion_b - pos_letra >= 0:
+            suma_letras_1 += tabla[posicion_a][posicion_b - pos_letra]
+        if posicion_b + pos_letra <= 17:
+            suma_letras_2 += tabla[posicion_a][posicion_b + pos_letra]
+    if suma_letras_1 == palabr:
+        return True, "izquierda"
+    elif suma_letras_2 == palabr:
+        return True, "derecha"
+    else:
+        return False, "xd"
+
+
+def buscar_diagonal(tabla, posicion_a, posicion_b, palabr):
+    tam_pal = len(palabr)
+    suma_letters_1 = ""
+    suma_letters_2 = ""
+    suma_letters_3 = ""
+    suma_letters_4 = ""
+    for pos_let in range(tam_pal):
+        if posicion_a - pos_let >= 0 and posicion_b - pos_let >= 0:
+            suma_letters_1 += tabla[posicion_a - pos_let][posicion_b - pos_let]
+        if posicion_a - pos_let >= 0 and posicion_b + pos_let <= 17:
+            suma_letters_2 += tabla[posicion_a - pos_let][posicion_b + pos_let]
+        if posicion_a + pos_let <= 17 and posicion_b - pos_let >= 0:
+            suma_letters_3 += tabla[posicion_a + pos_let][posicion_b - pos_let]
+        if posicion_a + pos_let <= 17 and posicion_b + pos_let <= 17:
+            suma_letters_4 += tabla[posicion_a + pos_let][posicion_b + pos_let]
+
+    if suma_letters_1 == palabr:
+        return True, "izquierda y arriba"
+    elif suma_letters_2 == palabr:
+        return True, "derecha y arriba"
+    elif suma_letters_3 == palabr:
+        return True, "izquierda y abajo"
+    elif suma_letters_4 == palabr:
+        return True, "derecha y abajo"
+    else:
+        return False, "xd"
+
+
+def buscar_palabra(matrizz, palabra):
+    primera_letra = palabra[0]
+    for filaa in range(18):
+        for columnaa in range(18):
+            if matriz[filaa][columnaa] == primera_letra:
+                if buscar_vertical(matrizz, filaa, columnaa, palabra)[0]:
+                    return buscar_vertical(matrizz, filaa, columnaa, palabra)[1], filaa, columnaa
+                elif buscar_horizontal(matrizz, filaa, columnaa, palabra)[0]:
+                    return buscar_horizontal(matrizz, filaa, columnaa, palabra)[1], filaa, columnaa
+                elif buscar_diagonal(matrizz, filaa, columnaa, palabra)[0]:
+                    return buscar_diagonal(matrizz, filaa, columnaa, palabra)[1], filaa, columnaa
+
+
+imprimir_matriz(matriz)
+print("Si quieres cerrar, escribe 10")
+palabra_a_buscar = str(input("Palabra a buscar: ")).upper()
+while palabra_a_buscar != "10":
+    fil = buscar_palabra(matriz, palabra_a_buscar)[1]
+    column = buscar_palabra(matriz, palabra_a_buscar)[2]
+    direccion = buscar_palabra(matriz, palabra_a_buscar)[0]
+    print("La palabra se encuentra en la fila: %d, columna: %d, dirección: %s" % (fil, column, direccion))
+    palabra_a_buscar = str(input("Palabra a buscar: ")).upper()
